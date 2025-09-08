@@ -9,3 +9,8 @@ fs_permissions = [
     { access = "read", path = "./broadcast" },
     { access = "read", path = "./img" },
 ]
+
+baseSepolia = "https://sepolia.base.org"
+
+[etherscan]
+baseSepolia = { key = "${ETHERSCAN_API_KEY}" }
