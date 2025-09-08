@@ -12,3 +12,14 @@ docs/
 
 # Dotenv file
 .env
+
+# Web project
+web/node_modules
+web/.next/
+web/.DS_Store
+web/*.tsbuildinfo
+web/.env.local
+web/.env.development.local
+web/.env.test.local
+web/.env.production.local
+web/.vercel
