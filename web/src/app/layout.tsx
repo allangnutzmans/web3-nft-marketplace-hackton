@@ -5,6 +5,9 @@ import '@rainbow-me/rainbowkit/styles.css';
 import Providers from "@/app/providers";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth/next";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import Footer from "@/components/Footer";
 
 /* import AppSidebar from "@/components/AppSidebar";
 import { Toaster } from "@/components/ui/sonner"; */
@@ -31,16 +34,25 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const headersList = await headers();
-  const cookie = headersList.get("cookie") ?? "";
+  const cookie = headersList.get("cookie");
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en" className="dark h-full">
+    <html lang="en" className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full min-h-screen`}
       >
         <Providers session={session} cookie={cookie}>
-          {children}
+          <div className="h-full flex flex-col">
+            <Header />
+            <div className="flex flex-1">
+              <Sidebar />
+              <main className="flex-1 overflow-auto ms-2">
+                {children}
+              </main>
+            </div>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>
