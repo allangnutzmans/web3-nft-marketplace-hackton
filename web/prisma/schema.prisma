@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
 }
 
 model PingDummy {
@@ -65,4 +66,37 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NFTItem {
+    id          String     @id @default(cuid())
+    metadataCid String     @unique // IPFS CID
+    price       Decimal    // Preço em ETH
+    isActive    Boolean    @default(true)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    purchases   Purchase[]
+}
+
+model Purchase {
+    id            String        @id @default(cuid())
+    nftItemId     String
+    buyerAddress  String
+    amount        Decimal       // Valor pago em ETH
+    txHash        String?       // Hash da transação de compra
+    status        PurchaseStatus @default(PENDING)
+    tokenId       Int?          // ID do token quando mintado
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
+    
+    nftItem       NFTItem       @relation(fields: [nftItemId], references: [id])
+    
+    @@index([buyerAddress])
+    @@index([status])
+}
+
+enum PurchaseStatus {
+    PENDING
+    APPROVED
+    REJECTED
 }
