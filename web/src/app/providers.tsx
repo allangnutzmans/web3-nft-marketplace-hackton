@@ -1,13 +1,14 @@
 "use client";
 import { useState } from 'react';
-import { WagmiProvider, cookieToInitialState } from "wagmi";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import { api, client } from "@/lib/trpc";
-import { rainbowkitConfig } from "@/lib/rainbowkitConfig";
-import { getRainbowKitTheme } from "@/config/rainbowkitTheme";
+import dynamic from "next/dynamic";
 import type { Session } from 'next-auth';
+
+const Web3Provider = dynamic(() => import("@/components/Web3Provider"), {
+    ssr: false,
+});
 
 type Props = {
     children: React.ReactNode;
@@ -15,23 +16,17 @@ type Props = {
     session: Session | null
 };
 
-const theme = getRainbowKitTheme();
 export default function Providers({ children , cookie, session }: Props) {
-    const initialState = cookieToInitialState(rainbowkitConfig, cookie);
     const [queryClient] = useState(() => new QueryClient())
     return (
-        <WagmiProvider config={rainbowkitConfig} initialState={initialState}>
-            <QueryClientProvider client={queryClient}>
-                <api.Provider client={client} queryClient={queryClient}>
-                  <RainbowKitProvider
-                      theme={theme}
-                  >
+        <QueryClientProvider client={queryClient}>
+            <api.Provider client={client} queryClient={queryClient}>
+                <Web3Provider cookie={cookie}>
                     <SessionProvider session={session}>
                         {children}
                     </SessionProvider>
-                  </RainbowKitProvider>
-              </api.Provider>
-            </QueryClientProvider>
-        </WagmiProvider>
+                </Web3Provider>
+            </api.Provider>
+        </QueryClientProvider>
     );
 }
