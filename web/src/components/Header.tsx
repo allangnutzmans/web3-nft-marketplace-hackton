@@ -1,20 +1,25 @@
 'use client'
 
-import { Search, MessageCircle, User } from "lucide-react"
+import { Search, MessageCircle, User, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import { api } from "@/lib/trpc"
+import { usePathname } from "next/navigation"
 
 const navigationItems = [
-  { name: "Collectibles", active: true },
-  { name: "Art", active: false },
-  { name: "Sports", active: false },
-  { name: "Gaming", active: false },
-  { name: "Utility", active: false },
-  { name: "Cards", active: false },
-]
+  { name: "Collectibles", href: "/" },
+  { name: "My Purchases", href: "/my-purchases" },
+  { name: "My NFTs", href: "/my-nfts" },
+];
+
 
 export default function Header() {
+  const { data: pendingPurchases } = api.purchase.getPendingPurchases.useQuery();
+  const pendingCount = pendingPurchases?.length || 0;
+  const pathname = usePathname();
+
   return (
     <header className="w-full bg-white ps-4 pe-6 py-4">
       <div className="flex items-center justify-between">
@@ -29,19 +34,23 @@ export default function Header() {
           
           {/* Navigation */}
           <nav className="flex items-center space-x-6">
-            {navigationItems.map((item) => (
-              <Button
-                key={item.name}
-                variant={item.active ? "default" : "ghost"}
-                className={`px-4 py-2 rounded-full ${
-                  item.active 
-                    ? "bg-black text-white hover:bg-gray-800" 
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                }`}
-              >
-                {item.name}
-              </Button>
-            ))}
+            {navigationItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link key={item.name} href={item.href}>
+                  <Button
+                    variant={isActive ? "default" : "ghost"}
+                    className={`px-4 py-2 rounded-full ${
+                      isActive 
+                        ? "bg-black text-white hover:bg-gray-800" 
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.name}
+                  </Button>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -66,6 +75,18 @@ export default function Header() {
               </Badge>
             </Button>
           </div>
+
+          {/* Admin Space */}
+          <Link href="/admin/purchases">
+            <Button variant="ghost" size="icon" className="relative">
+              <Settings className="w-5 h-5 text-gray-600" />
+              {pendingCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center p-0">
+                  {pendingCount}
+                </Badge>
+              )}
+            </Button>
+          </Link>
 
           {/* User Avatar */}
           <Button variant="ghost" size="icon">
