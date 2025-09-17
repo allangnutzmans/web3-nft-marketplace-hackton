@@ -12,6 +12,8 @@ docs/
 
 # Dotenv file
 .env
+.env.local
+.env.production
 
 # Web project
 web/node_modules
