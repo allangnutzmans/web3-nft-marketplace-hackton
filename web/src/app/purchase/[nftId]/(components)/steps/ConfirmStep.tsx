@@ -99,7 +99,7 @@ export default function ConfirmStep({ nft, isConnected, isWriting, onPurchase }:
                 <div>
                   <h3 className="font-semibold text-blue-800 mb-1">Network Check</h3>
                   <p className="text-sm text-blue-700">
-                    Make sure you're connected to Anvil Local network
+                    Make sure you&apos;re connected to Anvil Local network
                   </p>
                 </div>
                 <NetworkSwitcher />

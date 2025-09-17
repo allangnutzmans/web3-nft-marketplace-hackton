@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '@/server/trpc';
 import { pinataService } from '@/server/pinata';
 import { prisma } from '@/server/prisma';
-import { NFT } from '@/types/nft';
+import { type NFT } from '@/types/nft';
 import { PurchaseStatus } from '@prisma/client';
 
 export const nftRouter = createTRPCRouter({
@@ -110,9 +110,7 @@ export const nftRouter = createTRPCRouter({
           skip: offset,
           take: limit,
           include: {
-            nftItem: {
-              select: { name: true },
-            },
+            nftItem: true,
           },
         }),
         prisma.purchase.count({ where }),

@@ -9,12 +9,12 @@ export default function Footer() {
       <div className="flex items-center justify-between">
         {/* Filters */}
         <div className="flex items-center space-x-1">
-          <Button variant="text" className="flex items-center space-x-2 px-4 py-2 rounded-lg">
+          <Button variant="ghost" className="flex items-center space-x-2 px-4 py-2 rounded-lg">
             <Filter className="w-4 h-4" />
             <span>Filters</span>
           </Button>
           <div className="w-0.5 h-6 bg-gray-200"></div>
-          <Button variant="text" className="flex items-center space-x-2 px-4 py-2 rounded-lg">
+          <Button variant="ghost" className="flex items-center space-x-2 px-4 py-2 rounded-lg">
             <span>Popular</span>
             <ChevronDown className="w-4 h-4" />
           </Button>

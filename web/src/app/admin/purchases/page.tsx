@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/trpc';
 import { toast } from 'sonner';
-import { CheckCircle, XCircle, Clock, Copy, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Copy } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AdminPurchasesPage() {
@@ -15,9 +15,9 @@ export default function AdminPurchasesPage() {
   const { data: pendingPurchases, refetch } = api.purchase.getPendingPurchases.useQuery();
 
   const approveMutation = api.purchase.approvePurchase.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success(data.message);
-      refetch();
+      await refetch();
       
       // Transaction info
       if (data.contractResult) {
@@ -45,9 +45,9 @@ export default function AdminPurchasesPage() {
   });
 
   const rejectMutation = api.purchase.rejectPurchase.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       toast.success(data.message);
-      refetch();
+      await refetch();
       
       // Transaction info
       if (data.contractResult) {
@@ -55,7 +55,7 @@ export default function AdminPurchasesPage() {
           <div className="space-y-2">
             <p><strong>💰 Refund Processed!</strong></p>
             <p>Tx: <code className="text-xs">{data.contractResult.txHash}</code></p>
-            <p>ETH was returned to the user's wallet!</p>
+            <p>ETH was returned to the user&apos;s wallet!</p>
           </div>,
           { duration: 8000 }
         );
@@ -83,8 +83,8 @@ export default function AdminPurchasesPage() {
     rejectMutation.mutate({ purchaseId });
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboard = async (text: string) => {
+    await navigator.clipboard.writeText(text);
     toast.success('Copied to clipboard!');
   };
 

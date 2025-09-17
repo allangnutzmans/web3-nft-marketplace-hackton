@@ -114,7 +114,7 @@ export const purchaseRouter = createTRPCRouter({
       return purchase;
     }),
 
-    // PASS THE BELOW TO A ADMIN ROUTE
+  // PASS THE BELOW TO A ADMIN ROUTE
   updateStatus: publicProcedure
     .input(
       z.object({
@@ -229,13 +229,13 @@ export const purchaseRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error('Error approving purchase:', error);
-        
+
         // If error occurred, keep as pending to retry later
         await prisma.purchase.update({
           where: { id: input.purchaseId },
           data: { updatedAt: new Date() }
         });
-        
+
         throw error;
       }
     }),
@@ -276,18 +276,18 @@ export const purchaseRouter = createTRPCRouter({
         return {
           success: true,
           purchase: updatedPurchase,
-          message: `💰 Refund processed successfully! ${purchase.amount} ETH returned.`,
+          message: `💰 Refund processed successfully! ${purchase.amount.toString()} ETH returned.`,
           contractResult,
         };
       } catch (error) {
         console.error('Error rejecting purchase:', error);
-        
+
         // If error occurred, keep as pending to retry later
         await prisma.purchase.update({
           where: { id: input.purchaseId },
           data: { updatedAt: new Date() }
         });
-        
+
         throw error;
       }
     }),

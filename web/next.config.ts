@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: process.env.NEXT_PUBLIC_GATEWAY_URL,
+        hostname: process.env.NEXT_PUBLIC_GATEWAY_URL!,
         port: '',
         pathname: '/ipfs/**',
       },

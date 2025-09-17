@@ -1,9 +1,8 @@
 'use client'
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther } from 'viem';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -16,15 +15,10 @@ import ProcessingStep from './(components)/steps/ProcessingStep';
 import SuccessStep from './(components)/steps/SuccessStep';
 import ErrorStep from './(components)/steps/ErrorStep';
 
-interface PurchasePageProps {
-  params: {
-    nftId: string;
-  };
-}
-
 type PurchaseStep = 'confirm' | 'processing' | 'success' | 'error';
 
-export default function PurchasePage({ params }: PurchasePageProps) {
+export default function PurchasePage() {
+  const params = useParams();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<PurchaseStep>('confirm');
   const [txHash, setTxHash] = useState<string | null>(null);

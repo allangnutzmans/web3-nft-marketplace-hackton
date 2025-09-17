@@ -1,5 +1,6 @@
 "server only"
-import { NFT, NFTMetadata } from "@/types/nft";
+import { type NFT, type NFTMetadata } from "@/types/nft";
+import { type NFTItem } from "@prisma/client";
 import { PinataSDK } from "pinata"
 
 const pinataDefault = new PinataSDK({
@@ -14,7 +15,7 @@ export class PinataService {
     async fetchMetadata(cid: string): Promise<NFTMetadata | null> {
         try {
             const response = await this.pinata.gateways.public.get(cid);
-            const metadata = response.data as NFTMetadata;
+            const metadata = response.data as unknown as NFTMetadata;
             if (!metadata?.name) return null;
             return metadata;
         } catch (error) {
@@ -23,7 +24,7 @@ export class PinataService {
         }
     }
 
-    mapMetadataToNFT(nftItem: any, metadata: NFTMetadata): NFT {
+    mapMetadataToNFT(nftItem: NFTItem, metadata: NFTMetadata): NFT {
         return {
             id: nftItem.id,
             cid: nftItem.metadataCid,

@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, MessageCircle, User, Settings } from "lucide-react"
+import { Search, MessageCircle, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -34,7 +34,7 @@ export default function Header() {
             </div>
             <span className="font-bold text-xl">NFT</span>
           </div>
-          
+
           {/* Navigation */}
           <nav className="flex items-center space-x-6">
             {navigationItems.map((item) => {
@@ -43,11 +43,10 @@ export default function Header() {
                 <Link key={item.name} href={item.href} className="relative">
                   <Button
                     variant={isActive ? "default" : "ghost"}
-                    className={`px-4 py-2 rounded-full ${
-                      isActive 
-                        ? "bg-black text-white hover:bg-gray-800" 
+                    className={`px-4 py-2 rounded-full ${isActive
+                        ? "bg-black text-white hover:bg-gray-800"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {item.name}
                   </Button>
