@@ -8,9 +8,7 @@ import { getServerSession } from "next-auth/next";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
-
-/* import AppSidebar from "@/components/AppSidebar";
-import { Toaster } from "@/components/ui/sonner"; */
+import { Toaster } from "@/components/ui/sonner";
 import { authOptions } from "@/server/auth";
 
 const geistSans = Geist({
@@ -45,14 +43,15 @@ export default async function RootLayout({
         <Providers session={session} cookie={cookie}>
           <div className="h-full flex flex-col">
             <Header />
-            <div className="flex flex-1">
+            <div className="flex flex-1 overflow-hidden">
               <Sidebar />
-              <main className="flex-1 overflow-auto ms-2">
+              <main className="flex-1 overflow-auto ps-2">
                 {children}
               </main>
             </div>
             <Footer />
           </div>
+          <Toaster />
         </Providers>
       </body>
     </html>
