@@ -7,12 +7,15 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { api } from "@/lib/trpc"
 import { usePathname } from "next/navigation"
+import { ConnectButton } from "@rainbow-me/rainbowkit"
 
 const navigationItems = [
   { name: "Collectibles", href: "/" },
   { name: "My Purchases", href: "/my-purchases" },
   { name: "My NFTs", href: "/my-nfts" },
+  { name: "NFT Admin", href: "/admin/purchases", showBadge: true },
 ];
+
 
 
 export default function Header() {
@@ -37,7 +40,7 @@ export default function Header() {
             {navigationItems.map((item) => {
               const isActive = pathname === item.href;
               return (
-                <Link key={item.name} href={item.href}>
+                <Link key={item.name} href={item.href} className="relative">
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     className={`px-4 py-2 rounded-full ${
@@ -48,6 +51,11 @@ export default function Header() {
                   >
                     {item.name}
                   </Button>
+                  {item.showBadge && pendingCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center p-0">
+                      {pendingCount}
+                    </Badge>
+                  )}
                 </Link>
               );
             })}
@@ -89,9 +97,7 @@ export default function Header() {
           </Link>
 
           {/* User Avatar */}
-          <Button variant="ghost" size="icon">
-            <User className="w-5 h-5 text-gray-600" />
-          </Button>
+          <ConnectButton />
         </div>
       </div>
     </header>
