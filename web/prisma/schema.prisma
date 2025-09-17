@@ -86,6 +86,8 @@ model Purchase {
     txHash        String?       // Hash da transação de compra
     status        PurchaseStatus @default(PENDING)
     tokenId       Int?          // ID do token quando mintado
+    mintTxHash    String?       // Hash da transação de mint
+    refundTxHash  String?       // Hash da transação de refund
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
     
