@@ -13,18 +13,15 @@ const Web3Provider = dynamic(() => import("@/components/Web3Provider"), {
 type Props = {
     children: React.ReactNode;
     cookie?: string | null;
-    session: Session | null
-};
+}
 
-export default function Providers({ children , cookie, session }: Props) {
+export default function Providers({ children,  cookie }: Props) {
     const [queryClient] = useState(() => new QueryClient())
     return (
         <QueryClientProvider client={queryClient}>
             <api.Provider client={client} queryClient={queryClient}>
                 <Web3Provider cookie={cookie}>
-                    <SessionProvider session={session}>
-                        {children}
-                    </SessionProvider>
+                    {children}
                 </Web3Provider>
             </api.Provider>
         </QueryClientProvider>
