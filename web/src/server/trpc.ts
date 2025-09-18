@@ -3,7 +3,6 @@ import { prisma } from '@/server/prisma';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { getServerSession, type Session } from 'next-auth';
-import { authOptions } from '@/server/auth';
 import { headers } from 'next/headers';
 
 /**
@@ -46,7 +45,7 @@ export const createTRPCContext = async () => {
   //const cookieStore = await cookies();
   const headersList = await headers();
 
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
 
   return createInnerTRPCContext({
     session,

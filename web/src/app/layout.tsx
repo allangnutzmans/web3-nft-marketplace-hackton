@@ -4,12 +4,10 @@ import "./globals.css";
 import '@rainbow-me/rainbowkit/styles.css';
 import Providers from "@/app/providers";
 import { headers } from "next/headers";
-import { getServerSession } from "next-auth/next";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
-import { authOptions } from "@/server/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,14 +31,13 @@ export default async function RootLayout({
 }>) {
   const headersList = await headers();
   const cookie = headersList.get("cookie");
-  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-full min-h-screen`}
       >
-        <Providers session={session} cookie={cookie}>
+        <Providers cookie={cookie}>
           <div className="h-full flex flex-col">
             <Header />
             <div className="flex flex-1 overflow-hidden">
