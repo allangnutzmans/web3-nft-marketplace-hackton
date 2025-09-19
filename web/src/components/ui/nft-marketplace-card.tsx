@@ -4,16 +4,11 @@ import { Button } from "@/components/ui/button";
 
 interface NFTMarketplaceCardProps {
   name: string;
+  description: string;
   imageSrc: string;
   altText: string;
-  ownedBy: {
-    name: string;
-    avatar: string;
-  };
-  createdBy: {
-    name: string;
-    avatar: string;
-  };
+  ownedBy: string;
+  createdBy: string;
   price: {
     eth: string;
     usd: string;
@@ -25,7 +20,7 @@ interface NFTMarketplaceCardProps {
 export default function NFTMarketplaceCard({
   name,
   imageSrc,
-  altText,
+  description,
   ownedBy,
   createdBy,
   price,
@@ -33,78 +28,48 @@ export default function NFTMarketplaceCard({
   onBuyNow
 }: NFTMarketplaceCardProps) {
   return (
-    <div className="bg-blue-50/20 backdrop-blur-md border-4 border-white/20 rounded-3xl shadow-xl p-3 max-w-sm mx-auto">
+    <div className="bg-blue-50/20 backdrop-blur-md border-4 border-white/20 rounded-3xl shadow-xl p-2 max-w-sm mx-auto">
       {/* Header */}
-      <div className="bg-white/50 p-2 rounded-2xl">
-        <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-            <Image
-                src={ownedBy.avatar}
-                alt={`${ownedBy.name} avatar`}
-                width={32}
-                height={32}
-                className="rounded-full"
-            />
+      <div className="bg-white/50 p-2 rounded-2xl ">
+        <div className="flex justify-between items-center p-2">
+          <div className="flex items-center gap-2">
             <div>
-                <p className="text-xs text-gray-600">Owned by</p>
-                <p className="text-sm font-medium text-gray-800">{ownedBy.name}</p>
+              <p className="text-xs text-gray-600">Owned by</p>
+              <p className="text-sm font-medium text-gray-800">{ownedBy}</p>
             </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
+          </div>
+
+          <div className="flex items-center gap-2">
             <div className="text-right">
-                <p className="text-xs text-gray-600">Created by</p>
-                <p className="text-sm font-medium text-gray-800">{createdBy.name}</p>
+              <p className="text-xs text-gray-600">Created by</p>
+              <p className="text-sm font-medium text-gray-800">{createdBy}</p>
             </div>
-            <Image
-                src={createdBy.avatar}
-                alt={`${createdBy.name} avatar`}
-                width={32}
-                height={32}
-                className="rounded-full"
-            />
-            </div>
+          </div>
         </div>
-        <NFTCard
+        <div className='bg-secondary rounded-lg'>
+          <NFTCard
             imageSrc={imageSrc}
             altText={name}
             captionText={name}
-            />
+          />
+
+          <div className='mx-2 px-2 py-1 font-medium max-w-[240px]'>
+            <div className='text-primary'>{name}</div>
+            <span className='text-gray-600 text-xs block truncate '>{description}</span>
+          </div>
+        </div>
       </div>
 
-    {/* Price */}
-    <div className="flex items-center justify-center my-1">
-        <span className="text-sm font-bold text-gray-800">Price: </span>
-        <span className="text-sm text-gray-800 px-2"> {price.eth} ETH</span>
-        <span className="text-sm text-gray-600">X1</span>
-        <span className="text-lg font-bold text-gray-800 px-2">=</span>
-        <span className="text-sm font-bold text-gray-600">({price.usd})</span>
-    </div>
+      <div className="flex bg-white/50 p-2 rounded-b-4xl rounded-t-xl gap-3 my-2">
+        {/* Price */}
+        <div className="flex items-center justify-center ms-4">
+          <div className="flex flex-col items-center">
+            <div className="font-bold text-gray-800 px-2"> {price.eth} ETH</div>
+            {price.usd && <div className="text-xs text-gray-800 px-2">${price.usd} USD</div>}
+          </div>
 
-      {/* Buttons */}
-      <div className="flex bg-white/50 p-2 rounded-b-4xl rounded-t-xl gap-3">
-        <Button
-          variant="ghost"
-          size="default"
-          onClick={onViewHistory}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 hover:bg-white/20 rounded-tl-md rounded-tr-md rounded-br-md rounded-bl-3xl px-4 py-5"
-        >
-          <svg 
-            className="w-4 h-4" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" 
-            />
-          </svg>
-          View history
-        </Button>
-        
+        </div>
+
         <Button
           onClick={onBuyNow}
           className="flex-1 bg-gray-800 text-white hover:bg-gray-900 rounded-tl-md rounded-tr-md rounded-bl-md rounded-br-3xl font-medium px-6 py-5"
