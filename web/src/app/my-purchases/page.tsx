@@ -3,11 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
-import { ArrowLeft, Package, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Package, Clock, CheckCircle, XCircle, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/trpc";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import nftMarketplace from '@/lib/contract/nft-marketplace';
+import { toast } from 'sonner';
 
 export default function MyPurchasesPage() {
   const { address, isConnected } = useAccount();
@@ -22,7 +25,6 @@ export default function MyPurchasesPage() {
       enabled: !!address && isConnected
     }
   );
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -52,31 +54,31 @@ export default function MyPurchasesPage() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return 'Aguardando análise';
+        return 'Waiting for analysis';
       case 'APPROVED':
-        return 'Aprovado - NFT mintado';
+        return 'Approved - NFT minted';
       case 'REJECTED':
-        return 'Rejeitado - Valor devolvido';
+        return 'Rejected - Value returned';
       default:
         return status;
     }
+  };
+  
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(nftMarketplace.address);
+    toast.success('Contract address copied!')
   };
 
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
+        <div className="flex flex-col items-center justify-center text-center">
           <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Conecte sua wallet</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Connect your wallet</h1>
           <p className="text-gray-600 mb-6">
-            Você precisa conectar sua wallet para ver suas compras.
+            You need to connect your wallet to see your purchases.
           </p>
-          <Link href="/">
-            <Button>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar ao início
-            </Button>
-          </Link>
+          <ConnectButton />
         </div>
       </div>
     );
@@ -86,24 +88,46 @@ export default function MyPurchasesPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center space-x-4 mb-8">
-          <Link href="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Minhas Compras</h1>
-            <p className="text-gray-600">Acompanhe o status das suas compras de NFTs</p>
+        <div className="flex justify-between">
+          <div className="flex items-center space-x-4 mb-8">
+            <Link href="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Purchases</h1>
+              <p className="text-gray-600">Track the status of your NFT purchases</p>
+            </div>
+          </div>
+
+          {/* Address copy box */}
+          <div className="flex flex-col items-end bg-white rounded-lg px-4 py-3 shadow-sm mb-4">
+            <span className="text-xs text-gray-500">
+              Contract Address (use this to import your NFT)
+            </span>
+            <div className="flex items-center w-full">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={copyToClipboard}
+                className="ml-2"
+              >
+                <Copy className="w-4 h-4" />
+              </Button>
+              <p className="text-sm font-mono text-gray-700 truncate">
+                {nftMarketplace.address}
+              </p>
+            </div>
           </div>
         </div>
 
-        {isLoading ? (
+      {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <Package className="w-8 h-8 animate-pulse text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-600">Carregando suas compras...</p>
+              <p className="text-gray-600">Loading your purchases...</p>
             </div>
           </div>
         ) : !purchasesData?.purchases.length ? (
@@ -111,7 +135,7 @@ export default function MyPurchasesPage() {
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Nenhuma compra encontrada</h2>
             <p className="text-gray-600 mb-6">
-              Você ainda não fez nenhuma compra. Que tal explorar nossos NFTs?
+              You haven't made any purchases yet. Why not explore our NFTs?
             </p>
             <Link href="/">
               <Button>Explorar NFTs</Button>
@@ -128,7 +152,7 @@ export default function MyPurchasesPage() {
                         <Package className="w-8 h-8 text-gray-400" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">Compra NFT</h3>
+                        <h3 className="font-semibold text-lg">NFT Purchase</h3>
                         <p className="text-sm text-gray-600">
                           Valor: {purchase.amount.toString()} ETH
                         </p>
@@ -159,9 +183,9 @@ export default function MyPurchasesPage() {
                           <span>{getStatusText(purchase.status)}</span>
                         </span>
                       </Badge>
-                      {purchase.tokenId && (
+                      {purchase?.tokenId > 0 && (
                         <p className="text-xs text-gray-500">
-                          Token ID: #{purchase.tokenId}
+                          Token ID: {purchase.tokenId}
                         </p>
                       )}
                     </div>
