@@ -1,7 +1,6 @@
 'use client';
 
 import { http, createStorage, cookieStorage } from 'wagmi'
-import { defineChain } from 'viem'
 import { anvil, baseSepolia } from 'wagmi/chains'
 import { type Chain, getDefaultConfig } from '@rainbow-me/rainbowkit'
 

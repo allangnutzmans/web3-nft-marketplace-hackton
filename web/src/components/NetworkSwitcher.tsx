@@ -48,7 +48,7 @@ export default function NetworkSwitcher() {
                                 );
                             }
 
-                            if (!allowedChains.includes(chain!.id)) {
+                            if (!allowedChains.includes(chain.id)) {
                                 return (
                                     <Button
                                         onClick={openChainModal}

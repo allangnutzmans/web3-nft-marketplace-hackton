@@ -1,7 +1,6 @@
 'use client'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import TiltedCard from "@/components/ui/tilted-card";
 import NFTMarketplaceCard from "@/components/ui/nft-marketplace-card";
 import { api } from "@/lib/trpc";
 import { ScrollArea } from "@/components/ui/scroll-area";

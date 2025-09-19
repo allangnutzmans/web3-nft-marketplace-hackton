@@ -64,8 +64,8 @@ export default function MyPurchasesPage() {
     }
   };
   
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(nftMarketplace.address);
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(nftMarketplace.address);
     toast.success('Contract address copied!')
   };
 
@@ -133,12 +133,12 @@ export default function MyPurchasesPage() {
         ) : !purchasesData?.purchases.length ? (
           <div className="text-center py-12">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Nenhuma compra encontrada</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">No purchases found</h2>
             <p className="text-gray-600 mb-6">
-              You haven't made any purchases yet. Why not explore our NFTs?
+              You haven&apos;t made any purchases yet. Why not explore our NFTs?
             </p>
             <Link href="/">
-              <Button>Explorar NFTs</Button>
+              <Button>Explore NFTs</Button>
             </Link>
           </div>
         ) : (
@@ -154,7 +154,7 @@ export default function MyPurchasesPage() {
                       <div>
                         <h3 className="font-semibold text-lg">NFT Purchase</h3>
                         <p className="text-sm text-gray-600">
-                          Valor: {purchase.amount.toString()} ETH
+                          Value: {purchase.amount.toString()} ETH
                         </p>
                         <p className="text-xs text-gray-500">
                           {new Date(purchase.createdAt).toLocaleDateString('pt-BR', {
@@ -183,7 +183,7 @@ export default function MyPurchasesPage() {
                           <span>{getStatusText(purchase.status)}</span>
                         </span>
                       </Badge>
-                      {purchase?.tokenId > 0 && (
+                      {purchase?.tokenId && purchase.tokenId > 0 && (
                         <p className="text-xs text-gray-500">
                           Token ID: {purchase.tokenId}
                         </p>
@@ -194,11 +194,11 @@ export default function MyPurchasesPage() {
               </Card>
             ))}
 
-            {/* Paginação simples */}
+            {/* Simple pagination */}
             {purchasesData.pagination.totalPages > 1 && (
               <div className="flex justify-center pt-6">
                 <p className="text-sm text-gray-600">
-                  Página {purchasesData.pagination.page} de {purchasesData.pagination.totalPages}
+                  Page {purchasesData.pagination.page} of {purchasesData.pagination.totalPages}
                 </p>
               </div>
             )}
