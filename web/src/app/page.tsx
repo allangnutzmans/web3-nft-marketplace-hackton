@@ -1,7 +1,6 @@
 'use client'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import TiltedCard from "@/components/ui/tilted-card";
 import NFTMarketplaceCard from "@/components/ui/nft-marketplace-card";
 import { api } from "@/lib/trpc";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,7 +9,7 @@ import NFTCardTop from "@/components/ui/nft-card-top";
 export default function Home() {
   const router = useRouter();
   const { data: nftsData, isLoading } = api.nft.list.useQuery();
-  const { data: ethPriceUSd, isLoading: isLoadingUsdPrice } = api.nft.getEthPriceUsd.useQuery();
+  const { data: ethPriceUSd } = api.nft.getEthPriceUsd.useQuery();
 
 
   const topNft = nftsData?.[0];

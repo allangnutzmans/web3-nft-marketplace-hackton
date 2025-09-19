@@ -1,5 +1,4 @@
 import NFTCard from "./nft-card";
-import TiltedCard from "./tilted-card";
 
 interface NFTCardProps {
   imageSrc: string;
