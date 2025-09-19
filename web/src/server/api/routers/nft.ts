@@ -4,6 +4,7 @@ import { pinataService } from '@/server/pinata';
 import { prisma } from '@/server/prisma';
 import { type NFT } from '@/types/nft';
 import { PurchaseStatus } from '@prisma/client';
+import { getEthPriceInUsd } from '@/lib/utils';
 
 export const nftRouter = createTRPCRouter({
   list: publicProcedure
@@ -84,6 +85,18 @@ export const nftRouter = createTRPCRouter({
         throw error;
       }
     }),
+
+  getEthPriceUsd: publicProcedure
+    .query(async () => {
+      try {
+        const ethPrice = await getEthPriceInUsd();
+        return ethPrice;
+      } catch (error) {
+        console.error("Error fetching ETH price:", error);
+        return null;
+      }
+    }),
+
   // Listar compras de um NFT
   getPurchases: publicProcedure
     .input(
