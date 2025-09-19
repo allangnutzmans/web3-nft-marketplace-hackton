@@ -116,7 +116,7 @@ export default function PurchasePage() {
           <Link href="/">
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Go back to home
+              Home
             </Button>
           </Link>
         </div>

@@ -19,7 +19,7 @@ export default function ErrorStep({ onRetry, onGoHome }: ErrorStepProps) {
                 <>
                     <Link href="/">
                         <Button variant="outline" onClick={onGoHome}>
-                            Go back to home
+                        Home
                         </Button>
                     </Link>
                     <Button onClick={onRetry}>

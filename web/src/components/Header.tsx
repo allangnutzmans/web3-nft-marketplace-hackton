@@ -12,7 +12,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 const navigationItems = [
   { name: "Collectibles", href: "/" },
   { name: "My Purchases", href: "/my-purchases" },
-  { name: "My NFTs", href: "/my-nfts" },
   { name: "NFT Admin", href: "/admin/purchases", showBadge: true },
 ];
 
@@ -29,10 +28,10 @@ export default function Header() {
         {/* Logo */}
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
-              <span className="text-white font-bold text-sm">1</span>
+            <div className="w-10 h-8 bg-black rounded flex items-center justify-center">
+              <span className="text-white font-bold">NFT</span>
             </div>
-            <span className="font-bold text-xl">NFT</span>
+            <span className="font-bold text-xl">Marketplace</span>
           </div>
 
           {/* Navigation */}
@@ -44,8 +43,8 @@ export default function Header() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     className={`px-4 py-2 rounded-full ${isActive
-                        ? "bg-black text-white hover:bg-gray-800"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      ? "bg-black text-white hover:bg-gray-800"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       }`}
                   >
                     {item.name}
@@ -61,10 +60,9 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* Search and Actions */}
         <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="relative">
+
+          {/*<div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               type="text"
@@ -73,7 +71,6 @@ export default function Header() {
             />
           </div>
 
-          {/* Message Icon with Badge */}
           <div className="relative">
             <Button variant="ghost" size="icon" className="relative">
               <MessageCircle className="w-5 h-5 text-gray-600" />
@@ -83,7 +80,6 @@ export default function Header() {
             </Button>
           </div>
 
-          {/* Admin Space */}
           <Link href="/admin/purchases">
             <Button variant="ghost" size="icon" className="relative">
               <Settings className="w-5 h-5 text-gray-600" />
@@ -94,8 +90,7 @@ export default function Header() {
               )}
             </Button>
           </Link>
-
-          {/* User Avatar */}
+          */}
           <ConnectButton />
         </div>
       </div>

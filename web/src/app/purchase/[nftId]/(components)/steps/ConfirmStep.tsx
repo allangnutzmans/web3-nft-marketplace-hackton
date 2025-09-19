@@ -27,7 +27,7 @@ export default function ConfirmStep({ nft, isConnected, isWriting, onPurchase }:
         <Link href="/">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Go back to home
+            Home
           </Button>
         </Link>
       </div>
@@ -99,7 +99,7 @@ export default function ConfirmStep({ nft, isConnected, isWriting, onPurchase }:
                 <div>
                   <h3 className="font-semibold text-blue-800 mb-1">Network Check</h3>
                   <p className="text-sm text-blue-700">
-                    Make sure you&apos;re connected to Anvil Local network
+                    Make sure you&apos;re connected to Base Sepolia network
                   </p>
                 </div>
                 <NetworkSwitcher />

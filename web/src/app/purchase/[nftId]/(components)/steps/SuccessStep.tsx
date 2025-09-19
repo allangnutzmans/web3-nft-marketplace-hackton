@@ -21,7 +21,7 @@ export default function SuccessStep({ txHash, onGoHome, onViewPurchases }: Succe
         <>
           <Link href="/">
             <Button variant="outline" onClick={onGoHome}>
-              Go back to home
+              Home
             </Button>
           </Link>
           <Button onClick={onViewPurchases}>
