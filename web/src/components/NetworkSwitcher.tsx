@@ -1,6 +1,10 @@
 "use client";
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { anvil, baseSepolia } from 'wagmi/chains';
+import { Button } from './ui/button';
+
+const isProd = process.env.NODE_ENV === 'production';
 
 export default function NetworkSwitcher() {
     return (
@@ -14,6 +18,11 @@ export default function NetworkSwitcher() {
             }) => {
                 const ready = mounted;
                 const connected = ready && account && chain;
+
+                const allowedChains =
+                    isProd
+                        ? [baseSepolia.id]
+                        : [baseSepolia.id, anvil.id];
 
                 return (
                     <div
@@ -29,56 +38,43 @@ export default function NetworkSwitcher() {
                         {(() => {
                             if (!connected) {
                                 return (
-                                    <button 
-                                        onClick={openConnectModal} 
+                                    <Button
+                                        onClick={openConnectModal}
                                         type="button"
                                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                                     >
                                         Connect Wallet
-                                    </button>
+                                    </Button>
                                 );
                             }
 
-                            if (chain.unsupported) {
+                            if (!allowedChains.includes(chain!.id)) {
                                 return (
-                                    <button 
-                                        onClick={openChainModal} 
+                                    <Button
+                                        onClick={openChainModal}
                                         type="button"
                                         className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
                                     >
                                         Wrong network
-                                    </button>
+                                    </Button>
                                 );
                             }
 
                             return (
-                                <button
+                                <Button
                                     onClick={openChainModal}
-                                    type="button"
-                                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-2"
+                                    variant="ghost"
+                                    disabled={isProd}
                                 >
-                                    {chain.hasIcon && (
-                                        <div
-                                            style={{
-                                                background: chain.iconBackground,
-                                                width: 12,
-                                                height: 12,
-                                                borderRadius: 999,
-                                                overflow: 'hidden',
-                                                marginRight: 4,
-                                            }}
-                                        >
-                                            {chain.iconUrl && (
-                                                <img
-                                                    alt={chain.name ?? 'Chain icon'}
-                                                    src={chain.iconUrl}
-                                                    style={{ width: 12, height: 12 }}
-                                                />
-                                            )}
-                                        </div>
+                                    {chain?.hasIcon && chain.iconUrl && (
+                                        <img
+                                            alt={chain.name ?? 'Chain icon'}
+                                            src={chain.iconUrl}
+                                            style={{ width: 20, height: 20 }}
+                                        />
                                     )}
-                                    {chain.name} ↓
-                                </button>
+                                    {chain?.name} Connected
+                                </Button>
                             );
                         })()}
                     </div>
