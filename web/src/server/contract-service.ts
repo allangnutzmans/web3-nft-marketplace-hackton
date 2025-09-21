@@ -20,7 +20,7 @@ const chain = isProdBase
 
 const account = privateKeyToAccount(process.env.NEXT_PUBLIC_OWNER_PRIVATE_KEY as `0x${string}`);
 
-// Cliente público para ler
+// Public client to read
 const publicClient = createPublicClient({
   chain,
   transport: http(chain.rpcUrls.default.http[0]),
@@ -31,7 +31,7 @@ const walletClient = createWalletClient({
   chain,
   transport: http(chain.rpcUrls.default.http[0]),
 });
-// Contrato
+// Contract
 const contract = getContract({
   address: nftMarketplace.address as `0x${string}`,
   abi: nftMarketplace.abi,
@@ -40,26 +40,26 @@ const contract = getContract({
 
 export class ContractService {
   /**
-   * Aprovar compra e fazer mint do NFT
+   * Approve purchase and mint NFT
    */
   static async approvePurchase(buyerAddress: string, metadataUri: string) {
     try {
-      console.log('🚀 Minting NFT for:', buyerAddress);
-      console.log('📄 Metadata URI:', metadataUri);
+      console.log('Minting NFT for:', buyerAddress);
+      console.log('Metadata URI:', metadataUri);
 
-      // Chamar approvePurchase no contrato
+      // Call approvePurchase on contract
       const hash = await contract.write.approvePurchase([
         buyerAddress as `0x${string}`,
         metadataUri,
       ]);
 
-      console.log('⏳ Transaction sent:', hash);
+      console.log('Transaction sent:', hash);
 
-      // Aguardar confirmação
+      // Wait for confirmation
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      console.log('✅ Transaction confirmed in block:', receipt.blockNumber);
+      console.log('Transaction confirmed in block:', receipt.blockNumber);
 
-      // Extrair token ID dos logs (evento Transfer)
+      // Extract token ID from logs (Transfer event)
       let tokenId = 0;
       const transferLog = receipt.logs.find(log => 
         log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
@@ -76,33 +76,33 @@ export class ContractService {
         blockNumber: receipt.blockNumber.toString(),
       };
     } catch (error) {
-      console.error('❌ Error minting NFT:', error);
+      console.error('Error minting NFT:', error);
       throw new Error(`Failed to mint NFT: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   /**
-   * Rejeitar compra e fazer refund
+   * Reject purchase and make refund
    */
   static async rejectPurchase(buyerAddress: string, amount: string) {
     try {
-      console.log('💰 Refunding to:', buyerAddress);
-      console.log('💵 Amount:', amount, 'ETH');
+      console.log('Refunding to:', buyerAddress);
+      console.log('Amount:', amount, 'ETH');
 
-      // Converter amount para wei
+      // Convert amount to wei
       const amountWei = parseEther(amount);
 
-      // Chamar rejectPurchase no contrato
+      // Call rejectPurchase on contract
       const hash = await contract.write.rejectPurchase([
         buyerAddress as `0x${string}`,
         amountWei,
       ]);
 
-      console.log('⏳ Refund transaction sent:', hash);
+      console.log('Refund transaction sent:', hash);
 
-      // Aguardar confirmação
+      // Wait for confirmation
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
-      console.log('✅ Refund confirmed in block:', receipt.blockNumber);
+      console.log('Refund confirmed in block:', receipt.blockNumber);
 
       return {
         success: true,
@@ -110,27 +110,8 @@ export class ContractService {
         blockNumber: receipt.blockNumber.toString(),
       };
     } catch (error) {
-      console.error('❌ Error processing refund:', error);
+      console.error('Error processing refund:', error);
       throw new Error(`Failed to process refund: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
-
-  /**
-   * Verificar se o contrato está acessível
-   */
-/*   static async healthCheck() {
-    try {
-      // Tentar ler o owner do contrato
-      const owner = await contract.read.owner();
-      return {
-        success: true,
-        contractAddress: nftMarketplace.address,
-        owner,
-        network: anvilChain.name,
-      };
-    } catch (error) {
-      console.error('❌ Contract health check failed:', error);
-      throw new Error('Contract not accessible');
-    } 
-  }*/
 }
