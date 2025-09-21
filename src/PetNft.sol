@@ -3,8 +3,12 @@ pragma solidity 0.8.27;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract PetNft is ERC721, Ownable {
+error NeedEthToPurchase();
+error RefundFailed();
+
+contract PetNft is ERC721, Ownable, ReentrancyGuard {
     uint256 private s_tokenCounter;
     mapping(uint256 => string) private s_tokenIdToUri;
 
@@ -17,7 +21,7 @@ contract PetNft is ERC721, Ownable {
     }
 
     function requestPurchase() external payable {
-        require(msg.value > 0, "Need ETH to purchase");
+        if (msg.value == 0) revert NeedEthToPurchase();
         emit PurchaseRequested(msg.sender, msg.value, block.number);
     }
 
@@ -29,8 +33,9 @@ contract PetNft is ERC721, Ownable {
         emit PurchaseApproved(buyer, newId);
     }
     
-    function rejectPurchase(address buyer, uint256 amount) external onlyOwner {
-        payable(buyer).transfer(amount);
+    function rejectPurchase(address buyer, uint256 amount) external nonReentrant onlyOwner  {
+        (bool success, ) = buyer.call{value: amount}("");
+        if (!success) revert RefundFailed();
         emit PurchaseRejected(buyer, amount);
     }
 
