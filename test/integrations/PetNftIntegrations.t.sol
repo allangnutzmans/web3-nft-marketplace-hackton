@@ -24,10 +24,14 @@ contract PetNftIntegrationTest is Test {
     uint256 startingBuyer2Balance = s_buyer2.balance;
 
     // 2. Buyer 1 requests purchase
+    vm.expectEmit(true, true, true, true);
+    emit PetNft.PurchaseRequested(s_buyer1, 1 ether, block.number);
     vm.prank(s_buyer1);
     i_petNft.requestPurchase{ value: 1 ether }();
 
     // 3. Buyer 2 requests purchase
+    vm.expectEmit(true, true, true, true);
+    emit PetNft.PurchaseRequested(s_buyer2, 1 ether, block.number);
     vm.prank(s_buyer2);
     i_petNft.requestPurchase{ value: 1 ether }();
 

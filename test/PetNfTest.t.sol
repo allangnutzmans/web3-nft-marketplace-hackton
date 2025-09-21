@@ -28,7 +28,7 @@ contract PetNftTest is Test {
 
   function testRevert_RequestPurchase_ZeroValue() public {
     vm.prank(s_buyer);
-    vm.expectRevert('Need ETH to purchase');
+    vm.expectRevert(bytes4(keccak256('NeedEthToPurchase()')));
     i_petNft.requestPurchase();
   }
 
@@ -76,5 +76,16 @@ contract PetNftTest is Test {
     vm.prank(s_otherAddress);
     vm.expectRevert(); // No specific error message for Ownable
     i_petNft.rejectPurchase(s_buyer, 0);
+  }
+
+  function testRevert_RejectPurchase_RefundFailed() public {
+    address buyer = makeAddr('buyerForFailedRefund');
+
+    // Ensure the contract has no ether
+    vm.deal(address(i_petNft), 0);
+
+    vm.prank(address(this));
+    vm.expectRevert(bytes4(keccak256('RefundFailed()')));
+    i_petNft.rejectPurchase(buyer, 1 ether); // Try to refund 1 ether when contract has 0
   }
 }
