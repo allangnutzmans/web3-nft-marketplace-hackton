@@ -123,14 +123,7 @@ export default function MyPurchasesPage() {
           </div>
         </div>
 
-      {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <Package className="w-8 h-8 animate-pulse text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-600">Loading your purchases...</p>
-            </div>
-          </div>
-        ) : !purchasesData?.purchases.length ? (
+      {!purchasesData?.purchases.length ? (
           <div className="text-center py-12">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No purchases found</h2>
