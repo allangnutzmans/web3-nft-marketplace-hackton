@@ -216,7 +216,7 @@ export default function AdminPurchasesPage() {
                     onClick={() => handleReject(purchase.id)}
                     disabled={processingIds.has(purchase.id)}
                     variant="destructive"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-white"
                   >
                     <XCircle className="w-4 h-4" />
                     {processingIds.has(purchase.id) ? 'Rejecting...' : 'Reject'}

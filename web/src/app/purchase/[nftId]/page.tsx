@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther } from 'viem';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -30,16 +30,19 @@ export default function PurchasePage() {
     hash: txHash as `0x${string}` | undefined,
   });
 
-  // Buscar dados do NFT
+  // Get NFT data
   const { data: nftsData, isLoading: isLoadingNft } = api.nft.list.useQuery();
   const nft = nftsData?.find(n => n.id === params.nftId);
 
+  const utils = api.useUtils();
+
   const createPurchaseMutation = api.purchase.create.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Purchase registered successfully!");
+      await utils.purchase.getByAddress.invalidate();
     },
     onError: (error) => {
-      toast.error(`Erro ao registrar purchase: ${error.message}`);
+      toast.error(`Error registering purchase: ${error.message}`);
     }
   });
 
@@ -97,16 +100,6 @@ export default function PurchasePage() {
     }
   }, [txReceipt]);
 
-  if (isLoadingNft) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="w-6 h-6 animate-spin" />
-          <span>Loading NFT...</span>
-        </div>
-      </div>
-    );
-  }
 
   if (!nft) {
     return (

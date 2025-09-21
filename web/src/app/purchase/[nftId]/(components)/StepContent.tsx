@@ -28,7 +28,7 @@ export default function StepContent({
                 {children}
 
                 {txHash && (
-                    <p className="text-xs text-gray-500 break-all max-w-md mb-6">
+                    <p className="text-xs text-gray-500 break-all mx-auto mb-6">
                         Transaction hash: {txHash}
                     </p>
                 )}
