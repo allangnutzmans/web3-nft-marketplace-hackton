@@ -23,15 +23,10 @@ export default function NFTGrid() {
           imageSrc={nft.image}
           description={nft.description ?? nft.name}
           altText={nft.description ?? nft.name}
-          ownedBy=""
-          createdBy=""
           price={{
             eth: nft.price,
             usd: ethPriceUSd ? (parseFloat(nft.price) * ethPriceUSd).toFixed(2) : "",
           }}
-          onViewHistory={() =>
-            console.log("View history clicked for", nft.id)
-          }
           onBuyNow={() => handleBuyNow(nft.id)}
         />
       ))}

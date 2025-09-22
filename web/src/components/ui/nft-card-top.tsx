@@ -17,8 +17,6 @@ export default function NFTCardTop({
   imageSrc,
   altText,
   captionText,
-  ownedBy,
-  createdBy,
   name,
   description,
   rarity = 'common',
@@ -95,19 +93,13 @@ export default function NFTCardTop({
           <div className="flex items-center gap-3" role="group" aria-label="Owner information">
             <div className="w-3 h-3 bg-gradient-to-r from-[var(--primary)] to-[var(--ring)] rounded-full shadow-sm animate-pulse" />
             <div>
-              <p className="text-xs text-[var(--primary)] font-semibold uppercase tracking-wider opacity-80">Owned by</p>
-              <p className="text-sm font-bold text-[var(--foreground)] bg-gradient-to-r from-[var(--primary)] to-[var(--ring)] bg-clip-text text-transparent truncate max-w-[120px]">
-                {ownedBy}
-              </p>
+              <p className="text-xs text-[var(--primary)] font-semibold uppercase tracking-wider opacity-80">Unlimited</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3" role="group" aria-label="Creator information">
             <div className="text-right">
-              <p className="text-xs text-[var(--ring)] font-semibold uppercase tracking-wider opacity-80">Created by</p>
-              <p className="text-sm font-bold text-[var(--foreground)] bg-gradient-to-r from-[var(--ring)] to-[var(--primary)] bg-clip-text text-transparent truncate max-w-[120px]">
-                {createdBy}
-              </p>
+              <p className="text-xs text-[var(--ring)] font-semibold uppercase tracking-wider opacity-80">Picture based</p>
             </div>
             <div className="w-3 h-3 bg-gradient-to-r from-[var(--ring)] to-[var(--primary)] rounded-full shadow-sm animate-pulse" />
           </div>

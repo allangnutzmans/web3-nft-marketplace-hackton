@@ -7,13 +7,11 @@ interface NFTMarketplaceCardProps {
   description: string;
   imageSrc: string;
   altText: string;
-  ownedBy: string;
-  createdBy: string;
+
   price: {
     eth: string;
     usd: string;
   };
-  onViewHistory?: () => void;
   onBuyNow?: () => void;
 }
 
@@ -21,10 +19,7 @@ export default function NFTMarketplaceCard({
   name,
   imageSrc,
   description,
-  ownedBy,
-  createdBy,
   price,
-  onViewHistory,
   onBuyNow
 }: NFTMarketplaceCardProps) {
   return (
@@ -34,15 +29,13 @@ export default function NFTMarketplaceCard({
         <div className="flex justify-between items-center p-2">
           <div className="flex items-center gap-2">
             <div>
-              <p className="text-xs text-gray-600">Owned by</p>
-              <p className="text-sm font-medium text-gray-800">{ownedBy}</p>
+              <p className="text-xs text-gray-600">Unlimited</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="text-right">
-              <p className="text-xs text-gray-600">Created by</p>
-              <p className="text-sm font-medium text-gray-800">{createdBy}</p>
+              <p className="text-xs text-gray-600">Picture based</p>
             </div>
           </div>
         </div>

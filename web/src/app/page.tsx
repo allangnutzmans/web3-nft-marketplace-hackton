@@ -40,8 +40,6 @@ export default function Home() {
                       captionText={topNft.name}
                       name={topNft.name}
                       description={topNft.description ?? topNft.name}
-                      ownedBy=""
-                      createdBy=""
                       rarity="rare"
                     />
                   )}
