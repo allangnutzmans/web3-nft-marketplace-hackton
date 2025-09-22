@@ -1,6 +1,6 @@
-// https://sepolia.basescan.org/address/0xa8bebcc1781e2c8c70e783b68dbe6fa5afa2000f
+// https://sepolia.basescan.org/address/0x9882052Eb9790829F888a599E36295421305edCD
 const anvilAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-const baseSepoliaAddress = "0xa8bebcc1781e2c8c70e783b68dbe6fa5afa2000f";
+const baseSepoliaAddress = "0x9882052Eb9790829F888a599E36295421305edCD";
 
 const isProdBase = process.env.NEXT_PUBLIC_ENV === 'prod-base';
 
