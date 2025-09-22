@@ -52,6 +52,33 @@ export const nftRouter = createTRPCRouter({
       }
     }),
 
+  getByCids: publicProcedure
+    .input(z.object({ cids: z.array(z.string()) }))
+    .query(async ({ input }): Promise<NFT[]> => {
+      try {
+        const nftItems = await prisma.nFTItem.findMany({
+          where: {
+            metadataCid: { in: input.cids },
+            isActive: true
+          },
+        });
+
+        const nftList = await Promise.all(
+          nftItems.map(async (nftItem) => {
+            const metadata = await pinataService.fetchMetadata(nftItem.metadataCid);
+            if (!metadata) return null;
+
+            return pinataService.mapMetadataToNFT(nftItem, metadata);
+          })
+        );
+
+        return nftList.filter(Boolean) as NFT[];
+      } catch (error) {
+        console.error('Error fetching NFTs by CIDs:', error);
+        return [];
+      }
+    }),
+
   addNFT: publicProcedure
     .input(
       z.object({
