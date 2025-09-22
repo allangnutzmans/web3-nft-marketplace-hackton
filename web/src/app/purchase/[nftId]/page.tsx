@@ -119,7 +119,7 @@ export default function PurchasePage() {
 
 return (
     <div className="h-full">
-      <div className="container mx-auto px-4 py-8 max-h-[calc(100vh-8.5rem)]">
+      <div className="container mx-auto px-4 py-8 max-h-[calc(100vh-9.5rem)]">
         {currentStep === 'confirm' && (
           <ConfirmStep
             nft={nft}
