@@ -14,7 +14,14 @@ type Props = {
 }
 
 export default function Providers({ children,  cookie }: Props) {
-    const [queryClient] = useState(() => new QueryClient())
+    const [queryClient] = useState(() => new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: Infinity,
+                suspense: true,
+            },
+        },
+    }))
     return (
         <QueryClientProvider client={queryClient}>
             <api.Provider client={client} queryClient={queryClient}>
