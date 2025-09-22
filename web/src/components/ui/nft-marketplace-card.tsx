@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import NFTCard from "@/components/ui/nft-card";
 import { Button } from "@/components/ui/button";
 

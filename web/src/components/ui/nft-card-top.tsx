@@ -4,8 +4,6 @@ interface NFTCardProps {
   imageSrc: string;
   altText: string;
   captionText: string;
-  ownedBy: string;
-  createdBy: string;
   name: string;
   description: string;
   rarity?: 'common' | 'rare' | 'epic' | 'legendary';

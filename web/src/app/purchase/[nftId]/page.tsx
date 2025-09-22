@@ -31,7 +31,7 @@ export default function PurchasePage() {
   });
 
   // Get NFT data
-  const { data: nftsData, isLoading: isLoadingNft } = api.nft.list.useQuery();
+  const { data: nftsData } = api.nft.list.useQuery();
   const nft = nftsData?.find(n => n.id === params.nftId);
 
   const utils = api.useUtils();

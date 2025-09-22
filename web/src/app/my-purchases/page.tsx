@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import { ArrowLeft, Package, Clock, CheckCircle, XCircle, Copy } from 'lucide-react';
@@ -11,14 +11,12 @@ import { api } from "@/lib/trpc";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import nftMarketplace from '@/lib/contract/nft-marketplace';
 import { toast } from 'sonner';
-import { pinataService } from '@/server/pinata';
-import { type NFT } from '@/types/nft';
 import { useNftData } from '@/hooks/useNftData';
 
 export default function MyPurchasesPage() {
   const { address, isConnected } = useAccount();
 
-  const { data: purchasesData, isLoading } = api.purchase.getByAddress.useQuery(
+  const { data: purchasesData } = api.purchase.getByAddress.useQuery(
     {
       buyerAddress: address || '',
       page: 1,
