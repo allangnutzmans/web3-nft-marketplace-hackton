@@ -1,18 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/trpc';
 import { toast } from 'sonner';
-import { CheckCircle, XCircle, Clock, Copy } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Copy, Package } from 'lucide-react';
 import { format } from 'date-fns';
+import { type NFT } from '@/types/nft';
+import { useNftData } from '@/hooks/useNftData';
 
 export default function AdminPurchasesPage() {
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
   const { data: pendingPurchases, refetch } = api.purchase.getPendingPurchases.useQuery();
+
+  const { nftDataMap } = useNftData(pendingPurchases);
 
   const approveMutation = api.purchase.approvePurchase.useMutation({
     onSuccess: async (data) => {
@@ -33,7 +37,7 @@ export default function AdminPurchasesPage() {
       }
     },
     onError: (error) => {
-      toast.error(`Error approving: ${error.message}`);
+      toast.error(`Failed to approve purchase: ${error.message}`);
     },
     onSettled: (_, __, variables) => {
       setProcessingIds(prev => {
@@ -62,7 +66,7 @@ export default function AdminPurchasesPage() {
       }
     },
     onError: (error) => {
-      toast.error(`Error rejecting: ${error.message}`);
+      toast.error(`Failed to reject purchase: ${error.message}`);
     },
     onSettled: (_, __, variables) => {
       setProcessingIds(prev => {
@@ -130,29 +134,48 @@ export default function AdminPurchasesPage() {
             </CardContent>
           </Card>
         ) : (
-          pendingPurchases?.map((purchase) => (
-            <Card key={purchase.id} className="border-l-4 border-l-orange-500">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <span>Purchase #{purchase.id.slice(-8)}</span>
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                        <Clock className="w-3 h-3 mr-1" />
-                        PENDING
-                      </Badge>
-                    </CardTitle>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {format(new Date(purchase.createdAt), 'dd/MM/yyyy HH:mm:ss')}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-gray-900">
-                      {purchase.amount.toString()} ETH
+          pendingPurchases?.map((purchase) => {
+            const nftData = nftDataMap.get(purchase.nftItem.metadataCid);
+            return (
+              <Card key={purchase.id} className="border-l-4 border-l-orange-500">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        {nftData?.image ? (
+                          <img
+                            src={nftData.image}
+                            alt={nftData.name || 'NFT'}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              // Fallback to package icon if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <Package className={`w-8 h-8 text-gray-400 ${nftData?.image ? 'hidden' : ''}`} />
+                      </div>
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <span>{nftData?.name || `Purchase #${purchase.id.slice(-8)}`}</span>
+                          <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                            <Clock className="w-3 h-3 mr-1" />
+                            PENDING
+                          </Badge>
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {format(new Date(purchase.createdAt), 'dd/MM/yyyy HH:mm:ss')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">
+                        {purchase.amount.toString()} ETH
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardHeader>
+                </CardHeader>
               
               <CardContent className="space-y-4">
                 {/* Purchase information */}
@@ -224,7 +247,8 @@ export default function AdminPurchasesPage() {
                 </div>
               </CardContent>
             </Card>
-          ))
+            );
+          })
         )}
       </div>
     </div>

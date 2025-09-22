@@ -1,6 +1,7 @@
 import { createPublicClient, createWalletClient, http, getContract, parseEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import nftMarketplace from '@/lib/contract/nft-marketplace';
+import { getErrorMessage } from '@/lib/contract-errors';
 
 const isProdBase = process.env.NEXT_PUBLIC_ENV === 'prod-base';
 
@@ -61,10 +62,10 @@ export class ContractService {
 
       // Extract token ID from logs (Transfer event)
       let tokenId = 0;
-      const transferLog = receipt.logs.find(log => 
+      const transferLog = receipt.logs.find(log =>
         log.topics[0] === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
       );
-      
+
       if (transferLog && transferLog.topics[3]) {
         tokenId = parseInt(transferLog.topics[3], 16);
       }
@@ -77,7 +78,8 @@ export class ContractService {
       };
     } catch (error) {
       console.error('Error minting NFT:', error);
-      throw new Error(`Failed to mint NFT: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = getErrorMessage(error);
+      throw new Error(`Failed to mint NFT: ${errorMessage}`);
     }
   }
 
@@ -111,7 +113,8 @@ export class ContractService {
       };
     } catch (error) {
       console.error('Error processing refund:', error);
-      throw new Error(`Failed to process refund: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const errorMessage = getErrorMessage(error);
+      throw new Error(`Failed to process refund: ${errorMessage}`);
     }
   }
 }

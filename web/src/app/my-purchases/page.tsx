@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import { ArrowLeft, Package, Clock, CheckCircle, XCircle, Copy } from 'lucide-react';
@@ -11,6 +11,9 @@ import { api } from "@/lib/trpc";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import nftMarketplace from '@/lib/contract/nft-marketplace';
 import { toast } from 'sonner';
+import { pinataService } from '@/server/pinata';
+import { type NFT } from '@/types/nft';
+import { useNftData } from '@/hooks/useNftData';
 
 export default function MyPurchasesPage() {
   const { address, isConnected } = useAccount();
@@ -25,6 +28,9 @@ export default function MyPurchasesPage() {
       enabled: !!address && isConnected
     }
   );
+
+  const { nftDataMap } = useNftData(purchasesData?.purchases);
+  
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -136,16 +142,32 @@ export default function MyPurchasesPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {purchasesData.purchases.map((purchase) => (
+            {purchasesData.purchases.map((purchase) => {
+              const nftData = nftDataMap.get(purchase.nftItem.metadataCid);
+              return (
               <Card key={purchase.id}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <Package className="w-8 h-8 text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                        {nftData?.image ? (
+                          <img
+                            src={nftData.image}
+                            alt={nftData.name || 'NFT'}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              // Fallback to package icon if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                        ) : null}
+                        <Package className={`w-8 h-8 text-gray-400 ${nftData?.image ? 'hidden' : ''}`} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">NFT Purchase</h3>
+                        <h3 className="font-semibold text-lg">
+                          {nftData?.name || 'NFT Purchase'}
+                        </h3>
                         <p className="text-sm text-gray-600">
                           Value: {purchase.amount.toString()} ETH
                         </p>
@@ -185,7 +207,8 @@ export default function MyPurchasesPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
 
             {/* Simple pagination */}
             {purchasesData.pagination.totalPages > 1 && (
