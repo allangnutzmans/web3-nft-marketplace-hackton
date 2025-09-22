@@ -21,7 +21,7 @@ model PingDummy {
 model NFTItem {
     id          String     @id @default(cuid())
     metadataCid String     @unique // IPFS CID
-    price       Decimal    // Preço em ETH
+    price       Decimal    // Price in ETH
     isActive    Boolean    @default(true)
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt
@@ -32,12 +32,12 @@ model Purchase {
     id            String        @id @default(cuid())
     nftItemId     String
     buyerAddress  String
-    amount        Decimal       // Valor pago em ETH
-    txHash        String?       // Hash da transação de compra
+    amount        Decimal       // Amount paid in ETH
+    txHash        String?       // Purchase transaction hash
     status        PurchaseStatus @default(PENDING)
-    tokenId       Int?          // ID do token quando mintado
-    mintTxHash    String?       // Hash da transação de mint
-    refundTxHash  String?       // Hash da transação de refund
+    tokenId       Int?          // Token ID when minted
+    mintTxHash    String?       // Mint transaction hash
+    refundTxHash  String?       // Refund transaction hash
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
     
