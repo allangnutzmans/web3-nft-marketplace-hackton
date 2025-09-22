@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import PurchaseCardSkeleton from "@/components/ui/purchase-card-skeleton";
-import StatsCardSkeleton from "@/components/ui/stats-card-skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -36,15 +36,32 @@ export default function Loading() {
           </div>
         </div>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <StatsCardSkeleton />
-        </div>
-
         {/* Purchase cards skeleton */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <PurchaseCardSkeleton key={i} />
+            <Card key={i}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <Skeleton className="w-16 h-16 rounded-lg" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                      <Skeleton className="h-3 w-28" />
+                    </div>
+                  </div>
+
+                  <div className="text-right space-y-2">
+                    <Badge variant="outline" className="bg-gray-100">
+                      <Skeleton className="w-3 h-3 mr-1" />
+                      <Skeleton className="h-4 w-16" />
+                    </Badge>
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
