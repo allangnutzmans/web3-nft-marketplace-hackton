@@ -17,7 +17,6 @@ export default function Providers({ children,  cookie }: Props) {
     const [queryClient] = useState(() => new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: Infinity,
                 // @ts-expect-error - suspense is not in the type but works in TanStack Query v5
                 suspense: true,
             },

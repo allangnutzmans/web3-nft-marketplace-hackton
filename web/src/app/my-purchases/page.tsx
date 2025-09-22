@@ -196,7 +196,7 @@ export default function MyPurchasesPage() {
                           <span>{getStatusText(purchase.status)}</span>
                         </span>
                       </Badge>
-                      {purchase?.tokenId && purchase.tokenId > 0 && (
+                      {purchase?.tokenId != null && (
                         <p className="text-xs text-gray-500">
                           Token ID: {purchase.tokenId}
                         </p>
