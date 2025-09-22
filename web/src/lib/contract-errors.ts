@@ -1,7 +1,6 @@
 import { decodeErrorResult } from 'viem';
 import nftMarketplace from './contract/nft-marketplace';
 
-// Error message mapping for contract and viem errors
 export const ERROR_MESSAGES: Record<string, string> = {
   // Custom PetNft errors
   NeedEthToPurchase: 'ETH is required to make a purchase',
@@ -28,51 +27,74 @@ export const ERROR_MESSAGES: Record<string, string> = {
   UserRejectedRequestError: 'Transaction was cancelled',
 };
 
-// Simple error decoder
-export function getErrorMessage(error: any): string {
+// --- helpers ---
+function isErrorWithData(error: unknown): error is { data: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof (error as any).data === 'string' &&
+    (error as any).data.startsWith('0x')
+  );
+}
+
+function isErrorWithName(error: unknown): error is { name: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'name' in error &&
+    typeof (error as any).name === 'string'
+  );
+}
+
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as any).message === 'string'
+  );
+}
+
+// --- main decoder ---
+export function getErrorMessage(error: unknown): string {
   try {
-    // 1. Handle contract errors
-    if (error?.data) {
+    // 1. Contract errors (decoded)
+    if (isErrorWithData(error)) {
       try {
         const decoded = decodeErrorResult({
           abi: nftMarketplace.abi,
-          data: error.data,
+          data: error.data as `0x${string}`,
         });
-        const contractMessage = ERROR_MESSAGES[decoded.errorName];
-        if (contractMessage) return contractMessage;
-        if (decoded.errorName) return decoded.errorName;
-        return 'Contract execution failed';
+        return (
+          ERROR_MESSAGES[decoded.errorName] ??
+          decoded.errorName ??
+          'Contract execution failed'
+        );
       } catch {
-        // Continue to other checks
+        // fall through
       }
     }
 
-    // 2. Handle named errors
-    if (error?.name) {
-      const namedMessage = ERROR_MESSAGES[error.name];
-      if (namedMessage) return namedMessage;
+    // 2. Named errors
+    if (isErrorWithName(error)) {
+      return ERROR_MESSAGES[error.name] ?? error.name;
     }
 
-    // 3. Handle message patterns
-    if (error?.message) {
-      const message = error.message.toLowerCase();
-
-      if (message.includes('gas') || message.includes('out of gas')) {
-        return 'Transaction failed - gas estimation error';
-      }
-      if (message.includes('insufficient funds')) {
-        return 'Not enough funds for transaction';
-      }
-      if (message.includes('user rejected')) {
-        return 'Transaction was cancelled';
-      }
-      if (message.includes('network') || message.includes('connection') || message.includes('rpc')) {
+    // 3. Message pattern matching
+    if (isErrorWithMessage(error)) {
+      const msg = error.message.toLowerCase();
+      if (msg.includes('gas')) return 'Transaction failed - gas estimation error';
+      if (msg.includes('insufficient funds')) return 'Not enough funds for transaction';
+      if (msg.includes('user rejected')) return 'Transaction was cancelled';
+      if (msg.includes('network') || msg.includes('connection') || msg.includes('rpc')) {
         return 'Network error - please try again';
       }
+      return error.message;
     }
 
-    // 4. Return original message or fallback
-    return error?.message || 'An unexpected error occurred';
+    // 4. Fallback
+    return 'An unexpected error occurred';
   } catch {
     return 'An unexpected error occurred';
   }
